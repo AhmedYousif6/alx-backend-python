@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-""" task 0 module
+""" tasks from 0  to 3 module
 """
 import unittest
 from unittest.mock import patch
 from typing import Sequence, Mapping, Dict, Any
 from parameterized import parameterized
-from utils import access_nested_map, get_json
+from utils import access_nested_map, get_json, memoize
 
 
 class TestAccessNestedMap(unittest.TestCase):
@@ -61,3 +61,26 @@ class TestGetJson(unittest.TestCase):
         result = get_json(url)
         self.assertEqual(result, payload)
         mock_get.assert_called_once_with(url)
+
+
+class TestMemoize(unittest.TestCase):
+    """ class to test memoization decorator
+    """
+
+    def test_memoize(self):
+        """Test that utils.mimoize works as intended
+        """
+        class TestClass:
+
+            def a_method(self):
+                return 42
+
+            @memoize
+            def a_property(self):
+                return self.a_method()
+
+        with patch.object(TestClass, 'a_method') as mock_object:
+            test = TestClass()
+            test.a_property()
+            test.a_property()
+            mock_object.assert_called_once()
